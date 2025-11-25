@@ -45,7 +45,7 @@ Esta ferramenta foi criada para conscientizar sobre o tempo que passamos no celu
 1. Clone o repositório:
 
 ```bash
-git clone https://github.com/seu-usuario/calculadora-tempo-celular.git
+git clone https://github.com/jeferson-souzap/Tempo_dinheiro.git
 cd calculadora-tempo-celular
 ```
 
