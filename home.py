@@ -1,12 +1,20 @@
 import streamlit as st
 import pandas as pd
+import datetime
+from datetime import timedelta
+import time
+
+#Importa outras paginas
+from utils.config_historico import *
+
 
 st.set_page_config(
     page_title='Calculo de Tela - Tempo é Dinheiro',    
-    layout='centered'
+    layout= 'wide',
+    initial_sidebar_state='collapsed'
 )
 
-# CSS personalizado
+# Testando o uso de CSS personalizado
 st.markdown("""
 <style>
     .main-header {
@@ -39,7 +47,7 @@ st.markdown('<h1 class="main-header">Tempo é Dinheiro</h1>', unsafe_allow_html=
 
 st.info('Veja o que pode ser feito com o tempo que você ~PERDE~ no celular.')
 
-# Container de entrada de dados
+#Entrada de dados
 with st.container(border=True):
     st.subheader('Entrada de Dados')
     st.markdown('Preencha os campos abaixo para calcular o tempo gasto no celular e descubra o que poderia ser feito com esse tempo.')
@@ -72,10 +80,24 @@ with st.container(border=True):
     tempo_total_diario_minutos = tempo_horas * 60 + tempo_minutos
     tempo_total_diario_horas = tempo_total_diario_minutos / 60
     
-    if tempo_total_diario_horas > 0:
-        st.markdown(f"**Tempo diário total:** {tempo_total_diario_horas:.1f} horas ({tempo_total_diario_minutos} minutos)")
+    with st.expander('Botão para salvar o registro diário'):
 
-# Container de resultados
+        if st.button('Salvar Registro', type='primary', use_container_width=True):
+            data_atual = datetime.datetime.now().date()
+            
+            inserir_registro(
+                data=data_atual,
+                hora=tempo_horas,
+                minuto=tempo_minutos,
+                tempo_total=str(timedelta(minutes=tempo_total_diario_minutos))
+            )
+            st.success('Registro salvo com sucesso!')
+
+
+
+
+
+# Resultados
 with st.container(border=True):
     st.subheader('Resultados')
     
@@ -98,14 +120,14 @@ with st.container(border=True):
     meses_totais = dias_totais / 30
     anos_totais = dias_totais / 365
     
-    # Header dos resultados
+    
     st.markdown("---")
     if qtd_anos > 1:
         st.markdown(f'### Em {qtd_anos} anos, você gastará:')
     else:
         st.markdown(f'### Em {qtd_anos} ano, você gastará:')
     
-    # Exibição dos resultados em cards
+    
     col1, col2 = st.columns(2)
     
     with col1:
@@ -145,3 +167,47 @@ st.divider()
 
 with st.container():
     st.subheader('Oportunidades de Uso do Tempo')
+
+    tempo_leitura_horas = 6 # Média de horas para ler um livro de 250 páginas
+    tempo_curso_horas = 150    # Média de horas para completar um curso online
+    tempo_exercicio_horas = 1000  # Média de horas para treinar para uma maratona
+    tempo_idioma_horas = 600   # Média de horas para aprender um novo idioma
+    tempo_voluntariado_horas = 500  # Média de horas para trabalho voluntário significativo
+    tempo_projeto_horas = 300  # Média de horas para completar um projeto pessoal
+    
+
+
+    #col1, col2, col3, col4 = st.columns(4)
+    
+    noites_sono = horas_totais / 8
+    st.markdown(f'<div class="result-card">'
+                f'<span class="time-unit"> Noites de sono (8 hr/noite):</span><br>'
+                f'<span style="font-size: 1.5rem; font-weight: bold;">{noites_sono:,.0f} noite(s)</span>'
+                f'</div>', unsafe_allow_html=True)
+
+
+    qtd_livros = horas_totais / tempo_leitura_horas
+    st.markdown(f'<div class="result-card">'
+                f'<span class="time-unit"> Quantidade de livros lidos:</span><br>'
+                f'<span style="font-size: 1.5rem; font-weight: bold;">{qtd_livros:,.0f} livro(s)</span>'
+                f'</div>', unsafe_allow_html=True)
+    
+    tempo_aprender_idioma = horas_totais / tempo_idioma_horas
+    st.markdown(f'<div class="result-card">'
+                f'<span class="time-unit"> Total de idiomas (média 600 hr até dominar):</span><br>'
+                f'<span style="font-size: 1.5rem; font-weight: bold;">{tempo_aprender_idioma:,.0f} idioma(s)</span>'
+                f'</div>', unsafe_allow_html=True)
+
+
+    qtd_cursos = horas_totais / tempo_curso_horas
+    st.markdown(f'<div class="result-card">'
+                f'<span class="time-unit"> Quantidade de cursos online de 150 horas:</span><br>'
+                f'<span style="font-size: 1.5rem; font-weight: bold;">{qtd_cursos:,.0f} curso(s)</span>'
+                f'</div>', unsafe_allow_html=True)
+    
+    qtd_exercicios = horas_totais / tempo_exercicio_horas
+    st.markdown(f'<div class="result-card">'
+                f'<span class="time-unit"> Total de maratonas treinadas (média 1000 hr):</span><br>'
+                f'<span style="font-size: 1.5rem; font-weight: bold;">{qtd_exercicios:,.0f} maratona(s)</span>'
+                f'</div>', unsafe_allow_html=True)
+    
