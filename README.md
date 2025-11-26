@@ -58,7 +58,7 @@ pip install streamlit pandas
 3. Execute a aplicação:
 
 ```bash
-streamlit run app.py
+streamlit run home.py
 ```
 
 4. Acesse no navegador:
@@ -69,10 +69,18 @@ streamlit run app.py
 
 ```bash
 calculadora-tempo-celular/
+│   home.py
+│   README.md
+├───db
+│       time_tracker.db
 │
-├── app.py                 # Arquivo principal da aplicação
-├── requirements.txt       # Dependências do projeto
-└── README.md             # Documentação do projeto
+├───pages
+│       Historico.py
+│
+└───utils
+    │   config_db.py
+    │   config_historico.py
+    │
 ```
 
 ## Exemplo de Cálculo
