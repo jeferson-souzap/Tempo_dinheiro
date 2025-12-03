@@ -3,10 +3,10 @@ import pandas as pd
 import datetime
 from datetime import timedelta
 import time
+import plotly.express as px
 
 #Importa outras paginas
 from utils.config_historico import *
-
 
 st.set_page_config(
     page_title='Calculo de Tela - Tempo é Dinheiro',    
@@ -92,6 +92,73 @@ with st.container(border=True):
                 tempo_total=str(timedelta(minutes=tempo_total_diario_minutos))
             )
             st.success('Registro salvo com sucesso!')
+
+
+
+# Grafico de Barra
+
+with st.container(border=True):
+    st.subheader('Comparação do tempo de um dia')
+
+    col01, col02 = st.columns(2)
+
+    with col01:
+        TEMPO_MIN_DIA = 24
+        HR_SONO = 8
+        HR_TRABALHO = 8
+        HR_TRAJETO = 1
+
+        
+        horas_sono = st.slider("Horas de Sono", min_value=0, max_value=24, value=HR_SONO, step=1, key='sono')
+        horas_trabalho = st.slider("Horas de trabalho", min_value=0, max_value=24, value=HR_TRABALHO, step=1, key='trabalho')    
+        horas_trajeto = st.slider("Horas de Trajeto", min_value=0, max_value=24, value=HR_TRAJETO, step=1, key='trajeto')
+        
+        horas_celular = st.slider("Horas de Celular", min_value=0, max_value=24, value=tempo_horas, step=1, key='hr_cel', disabled=True)    
+        
+        HR_RESTANTE = TEMPO_MIN_DIA - (horas_sono + horas_trabalho + horas_trajeto + tempo_horas)
+        horas_restantes = st.slider("Horas Restante", min_value=0, max_value=24, value=HR_RESTANTE, step=1, key='restante', disabled=True)
+
+        TOTAL_HR = horas_sono + horas_trabalho + horas_trajeto + horas_celular + horas_restantes
+        st.info(f"Soma horas = {TOTAL_HR}h")
+        if HR_RESTANTE < 0:
+            st.warning("Verifique o valor das horas, **horario** restante não pode ficar negativo!")
+    
+    with col02:
+        
+        dados = {
+            "Atividades":['Sono', 'Trabalho', 'Trajeto', 'Tela', 'Livre'],
+            "Horas":[horas_sono, horas_trabalho, horas_trajeto, tempo_horas, horas_restantes]
+        }
+
+        df = pd.DataFrame(dados)
+
+        fig = px.pie(
+            df,
+            values='Horas',
+            names='Atividades',
+            title='Distribuição de 24 Horas',
+            color='Atividades',
+            color_discrete_map={
+                'Sono': '4C72B0',
+                'Trabalho': 'DD8452',
+                'Trajeto': '8C8C8C',
+                'Tela': 'A44C9E',
+                'Livre': '55A868'
+            }           
+
+        )
+
+        fig.update_traces(
+            textposition='inside',
+            textinfo='percent+label'
+            #hovertemplate='%{label}<br>Horas: %{value} (%{percent})<extra></extra>' # Adicionei este detalhe útil
+        )
+        
+        st.plotly_chart(fig, use_container_width=True)
+    
+
+    
+
 
 
 
