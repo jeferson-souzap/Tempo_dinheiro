@@ -95,7 +95,7 @@ with st.container(border=True):
 
 
 
-# Grafico de Barra
+# Grafico de horas
 
 with st.container(border=True):
     st.subheader('Comparação do tempo de um dia')
